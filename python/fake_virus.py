@@ -4,7 +4,7 @@ import requests
 import os
 
 
-# download the fucking miku image
+# download the fucking miku imagee
 url = 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b8/92/ce/b892cead-70a1-8f29-0045-af30080d3a16/4571640501760_cover.png/316x316bb.webp'
 
 response = requests.get(url)
